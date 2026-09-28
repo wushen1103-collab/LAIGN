@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Environments and caches
+.conda/
+.venv/
+venv/
+.cache/
+.mamba/
+.local/
+
+# Runtime artifacts
+data/
+checkpoints/
+outputs/
+logs/
+experiments/
+main/
+supplementary/
+renders/
+*.pt
+*.pth
+*.ckpt
+*.npz
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Keep the compact, publication-level source tables
+!source_data/
+!source_data/**

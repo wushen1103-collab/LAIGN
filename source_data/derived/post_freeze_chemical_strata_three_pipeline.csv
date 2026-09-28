@@ -1,0 +1,6 @@
+stratum,n,laign_mean,laign_sd,fixed_fusion_mean,fixed_fusion_sd,distance_mean,effect_mean,effect_sd,aggregation
+Descriptor available,66,0.940867606340,0.004884369477,0.923701397451,0.006805640471,0.731368761570,0.017166208889,0.005037467037,mean and sample SD across three end-to-end retraining runs
+Unseen ligand code,21,0.960167677618,0.005924865624,0.912575048733,0.005279368894,0.753408661786,0.047592628886,0.009238940297,mean and sample SD across three end-to-end retraining runs
+Unseen scaffold,12,0.964948863566,0.006726624033,0.922044360528,0.007501405518,0.766968015150,0.042904503038,0.000804117434,mean and sample SD across three end-to-end retraining runs
+Tanimoto below 0.5,14,0.968243940670,0.005739886683,0.931536889523,0.006762468391,0.769407828309,0.036707051147,0.001177396898,mean and sample SD across three end-to-end retraining runs
+Joint OOD,1,1.000000000000,0.000000000000,1.000000000000,0.000000000000,0.744047619048,0.000000000000,0.000000000000,mean and sample SD across three end-to-end retraining runs

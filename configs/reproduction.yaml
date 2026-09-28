@@ -1,0 +1,46 @@
+project:
+  name: LAIGN
+  task: known-pose protein-ligand residue ranking
+
+graph_construction:
+  negative_mode: hard
+  negative_ratio: 10
+  max_negatives_per_complex: 128
+  shard_size: 256
+  seeds: [2401, 2402, 2403]
+
+interaction_scorer:
+  architecture: ViSNet
+  hidden_dimension: 64
+  layers: 3
+  heads: 8
+  radial_basis_functions: 16
+  cutoff_angstrom: 5.0
+  max_neighbors: 64
+  dropout: 0.10
+  learning_rate: 0.001
+  weight_decay: 0.00001
+  epochs: 10
+  batch_size: 8
+  seeds: [2401, 2402, 2403]
+
+residue_localizer:
+  interaction_backbone: visnet
+  ensemble_seeds: [2401, 2402, 2403]
+  feature_mode: typed_multiscale
+  classifier: logistic_regression
+  regularization_grid: [0.01, 0.1, 1.0, 10.0]
+  candidate_radius_angstrom: 999.0
+  training_graph_limit: 5000
+  internal_validation_graph_limit: 1000
+  active_interactions:
+    - hydrophobic_contact
+    - hydrogen_bond
+    - salt_bridge
+    - pi_stacking
+    - pi_cation
+
+evaluation:
+  bootstrap_replicates: 10000
+  calibration_bins: 15
+  fixed_budget_k: 10

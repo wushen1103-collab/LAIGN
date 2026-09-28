@@ -1,0 +1,36 @@
+name: laign
+channels:
+  - https://conda.anaconda.org/pytorch
+  - https://conda.anaconda.org/nvidia
+  - https://conda.anaconda.org/pyg
+  - https://conda.anaconda.org/bioconda
+  - https://conda.anaconda.org/conda-forge
+dependencies:
+  - python=3.10.8
+  - pip
+  - numpy=1.26.4
+  - pandas=2.3.3
+  - pyarrow
+  - scipy=1.15.2
+  - scikit-learn=1.7.2
+  - pyyaml=6.0.3
+  - tqdm=4.68.3
+  - requests=2.34.2
+  - joblib=1.5.3
+  - networkx=3.4.2
+  - biopython=1.87
+  - rdkit=2024.3.5
+  - openbabel
+  - plip
+  - gawk
+  - pdbfixer
+  - mmseqs2
+  - foldseek
+  - vina
+  - pytorch=2.4.1
+  - pytorch-cuda=12.4
+  - pyg=2.6.1
+  - pip:
+      - fair-esm==2.0.0
+      - lifelines==0.30.0
+      - torch-cluster
