@@ -223,7 +223,9 @@ def fig_s3() -> None:
     legend_above(ax, ncol=3)
     finish_axis(ax, "y")
     panel_label(ax, "(b)")
-    pd.DataFrame(summary_rows).to_csv(DATA / "figs3_similarity_summary.csv", index=False)
+    pd.DataFrame(summary_rows).to_csv(
+        DATA / "figs3_similarity_summary.csv", index=False, lineterminator="\n"
+    )
 
     ax = axes[2]
     rng = np.random.default_rng(2027)
@@ -243,7 +245,9 @@ def fig_s3() -> None:
     ax.set_xlabel("Paired $\\Delta$ graph AP\n(LAIGN - fixed fusion)")
     finish_axis(ax, "x")
     panel_label(ax, "(c)")
-    pd.DataFrame(effect_rows).to_csv(DATA / "figs3_similarity_effect.csv", index=False)
+    pd.DataFrame(effect_rows).to_csv(
+        DATA / "figs3_similarity_effect.csv", index=False, lineterminator="\n"
+    )
 
     fig.subplots_adjust(left=0.08, right=0.985, top=0.94, bottom=0.25)
     export(fig, OUT / "FigS3_chemical_diagnostics")
