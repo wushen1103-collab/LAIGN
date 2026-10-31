@@ -475,6 +475,13 @@ def main() -> int:
     payload = {
         "archives": [str(path) for path in args.archives],
         "selected_complexes": {split: len(ids) for split, ids in selected.items()},
+        "analysis_protocol": {
+            "metric_bootstrap_resamples": 1000,
+            "paired_bootstrap_resamples": args.bootstrap,
+            "sign_flip_permutations": args.permutations,
+            "random_seed": args.seed,
+            "distance_matching_calipers_A": [0.05, 0.10, 0.25, 0.50],
+        },
         "trainable_fusion": {
             "inputs": ["raw interaction maximum", "exp(-nearest distance / 12 A)"],
             "classifier": "class-balanced L2 logistic regression",
@@ -496,6 +503,10 @@ def main() -> int:
         "## Trainable fusion selection",
         "",
         dataframe_to_markdown(trace),
+        "",
+        "## Analysis protocol",
+        "",
+        f"Metric SDs use 1,000 complex-level bootstrap resamples. Paired intervals use {args.bootstrap:,} complex-level bootstrap resamples and {args.permutations:,} sign flips (seed {args.seed}).",
         "",
         "## PLINDER-200 summary",
         "",
@@ -521,6 +532,10 @@ def main() -> int:
             {
                 "output_dir": str(args.output_dir),
                 "selected_C": [float(value) for value in selected_rows["C"]],
+                "metric_bootstrap": 1000,
+                "paired_bootstrap": args.bootstrap,
+                "sign_flips": args.permutations,
+                "seed": args.seed,
             }
         )
     )
