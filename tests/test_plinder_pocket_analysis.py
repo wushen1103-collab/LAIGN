@@ -22,7 +22,8 @@ def make_split(graphs: int, residues_per_graph: int, offset: float):
     sample_index = np.repeat(np.arange(graphs), residues_per_graph)
     local = np.tile(np.arange(residues_per_graph), graphs)
     labels = (local < 2).astype(np.int8)
-    distances = 2.0 + local.astype(float) + offset
+    distance_pattern = np.asarray([2.00, 3.00, 2.05, 3.05, 5.00, 6.00])
+    distances = np.tile(distance_pattern, graphs) + offset
     interaction = np.where(labels == 1, 0.8, 0.2) + 0.01 * sample_index
     fixed = 0.55 * interaction + 0.45 * np.exp(-distances / 12.0)
     trained = np.where(labels == 1, 0.9, 0.1) + 0.001 * sample_index
@@ -75,11 +76,15 @@ def test_end_to_end_smoke(tmp_path):
     metrics, residues = MODULE.collect_external_rows(
         archives, models, MODULE.load_selected(subset_path)
     )
-    summary = MODULE.summarize_metrics(metrics)
+    summary = MODULE.summarize_metrics(metrics, bootstrap=20, seed=10)
     effects, _ = MODULE.paired_effects(metrics, 20, 40, 11)
+    pairs, pair_summary = MODULE.distance_matched_pairs(residues)
+    pair_effects, _ = MODULE.distance_matched_effects(pairs, 20, 40, 12)
 
     assert len(trace) == 2
     assert set(summary["subset"]) == {"All residues", "Distance <= 6 A", "Distance <= 8 A"}
     assert set(summary["method"]) == set(MODULE.METHODS)
     assert residues[["split", "sample_id"]].drop_duplicates().shape[0] == 4
     assert not effects.empty
+    assert not pair_summary.empty
+    assert not pair_effects.empty

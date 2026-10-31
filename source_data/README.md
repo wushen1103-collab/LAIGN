@@ -13,3 +13,10 @@ without requiring access to the original compute environment.
 476 experimentally assayed sites used by the distance-conditioned Platinum
 analysis. It contains public benchmark identifiers, measured endpoints and
 model scores, without local paths or personal metadata.
+
+The four `validation/plinder200_*` tables and
+`validation/trainable_fusion_selection.csv` record the pocket-restricted
+PLINDER-200 summaries, paired graph-AP effects, distance-matched residue-pair
+analyses and internal-validation selection trace for the trainable two-input
+fusion control. They contain aggregate statistics only and exclude prediction
+archives, local paths and machine metadata.

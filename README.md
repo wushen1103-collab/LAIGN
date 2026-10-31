@@ -116,7 +116,9 @@ The distance-conditioned Platinum workflow runs directly from the compact
 assayed-site table committed under `source_data/validation/`. The PLINDER
 pocket-restricted workflow consumes the three standard Stage-2 prediction
 archives, fits one two-input fusion control per training run, and evaluates
-their probability ensemble on the frozen PLINDER-200 manifest.
+their probability ensemble on the frozen PLINDER-200 manifest. Compact
+machine-readable summaries of the pocket-restricted, paired-effect and
+distance-matched analyses are committed under `source_data/validation/`.
 
 External baseline adapters require outputs from the corresponding official
 implementations. See `scripts/baselines/README.md` for the evaluation boundary.

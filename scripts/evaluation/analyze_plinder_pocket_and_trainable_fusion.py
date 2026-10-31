@@ -24,6 +24,24 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
 
+def dataframe_to_markdown(frame: pd.DataFrame, float_digits: int = 4) -> str:
+    """Render a compact Markdown table without pandas' optional tabulate dependency."""
+    columns = [str(column) for column in frame.columns]
+    rows = []
+    for values in frame.itertuples(index=False, name=None):
+        rendered = []
+        for value in values:
+            if isinstance(value, (float, np.floating)):
+                rendered.append(f"{float(value):.{float_digits}f}")
+            else:
+                rendered.append(str(value))
+        rows.append(rendered)
+    header = "| " + " | ".join(columns) + " |"
+    separator = "| " + " | ".join(["---"] * len(columns)) + " |"
+    body = ["| " + " | ".join(row) + " |" for row in rows]
+    return "\n".join([header, separator, *body])
+
+
 SPLITS = ("external_val", "external_test")
 METHODS = ("Distance", "Fixed fusion", "Trainable fusion", "LAIGN")
 
@@ -228,14 +246,26 @@ def collect_external_rows(
     return pd.DataFrame(metric_rows), pd.DataFrame(residue_rows)
 
 
-def summarize_metrics(metrics: pd.DataFrame) -> pd.DataFrame:
+def summarize_metrics(metrics: pd.DataFrame, bootstrap: int, seed: int) -> pd.DataFrame:
     value_columns = ["graph_AP", "IoU_at_P", "recall_at_10", "precision_at_10"]
+    rng = np.random.default_rng(seed)
     rows = []
     for (subset, method), part in metrics.groupby(["subset", "method"], sort=False):
         complexes = part[["split", "sample_id"]].drop_duplicates().shape[0]
-        row = {"subset": subset, "method": method, "complexes": int(complexes)}
+        row = {
+            "subset": subset,
+            "method": method,
+            "complexes": int(complexes),
+            "mean_residues": float(part["residues"].mean()),
+            "mean_positives": float(part["positives"].mean()),
+        }
         for column in value_columns:
-            row[column] = float(part[column].mean())
+            values = part[column].dropna().to_numpy(dtype=float)
+            draws = values[
+                rng.integers(0, len(values), size=(bootstrap, len(values)))
+            ].mean(axis=1)
+            row[column] = float(values.mean())
+            row[f"{column}_bootstrap_SD"] = float(draws.std(ddof=1))
         rows.append(row)
     return pd.DataFrame(rows)
 
@@ -341,6 +371,55 @@ def distance_matched_pairs(residues: pd.DataFrame) -> tuple[pd.DataFrame, pd.Dat
     return pairs, pd.DataFrame(summary_rows)
 
 
+def distance_matched_effects(
+    pairs: pd.DataFrame, bootstrap: int, permutations: int, seed: int
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Compare pair discrimination with complexes as the resampling unit."""
+    rng = np.random.default_rng(seed)
+    rows = []
+    boot_rows = []
+    for (radius, caliper), part in pairs.groupby(["radius", "caliper"], sort=True):
+        per_pair = part[["split", "sample_id"]].copy()
+        for method in METHODS:
+            delta = part[f"{method}_difference"].to_numpy(dtype=float)
+            per_pair[method] = (delta > 0).astype(float) + 0.5 * (delta == 0)
+        per_complex = per_pair.groupby(["split", "sample_id"], sort=False)[list(METHODS)].mean()
+        for comparison in ("Distance", "Fixed fusion", "Trainable fusion"):
+            delta = (per_complex["LAIGN"] - per_complex[comparison]).to_numpy(dtype=float)
+            draws = np.asarray(
+                [delta[rng.integers(0, len(delta), len(delta))].mean() for _ in range(bootstrap)]
+            )
+            signs = rng.choice(np.asarray([-1.0, 1.0]), size=(permutations, len(delta)))
+            null = np.mean(signs * delta[None, :], axis=1)
+            observed = float(delta.mean())
+            p_value = float((1 + np.sum(np.abs(null) >= abs(observed))) / (permutations + 1))
+            comparison_name = f"LAIGN - {comparison}"
+            rows.append(
+                {
+                    "radius": float(radius),
+                    "caliper": float(caliper),
+                    "comparison": comparison_name,
+                    "complexes": int(len(delta)),
+                    "complex_mean_pair_accuracy_difference": observed,
+                    "CI95_low": float(np.quantile(draws, 0.025)),
+                    "CI95_high": float(np.quantile(draws, 0.975)),
+                    "sign_flip_p": p_value,
+                    "win_rate": float(np.mean(delta > 0)),
+                }
+            )
+            boot_rows.extend(
+                {
+                    "radius": float(radius),
+                    "caliper": float(caliper),
+                    "comparison": comparison_name,
+                    "iteration": index + 1,
+                    "complex_mean_pair_accuracy_difference": float(value),
+                }
+                for index, value in enumerate(draws)
+            )
+    return pd.DataFrame(rows), pd.DataFrame(boot_rows)
+
+
 def main() -> int:
     args = parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -359,11 +438,14 @@ def main() -> int:
         traces.append(trace)
     trace = pd.concat(traces, ignore_index=True)
     metrics, residues = collect_external_rows(archives, models, selected)
-    summary = summarize_metrics(metrics)
+    summary = summarize_metrics(metrics, bootstrap=1000, seed=args.seed)
     effects, boot = paired_effects(
         metrics, args.bootstrap, args.permutations, args.seed + 1
     )
     pairs, pair_summary = distance_matched_pairs(residues)
+    pair_effects, pair_boot = distance_matched_effects(
+        pairs, args.bootstrap, args.permutations, args.seed + 2
+    )
 
     trace.to_csv(args.output_dir / "trainable_fusion_selection.csv", index=False)
     metrics.to_csv(args.output_dir / "plinder200_pocket_per_complex.csv", index=False)
@@ -374,6 +456,12 @@ def main() -> int:
     pairs.to_csv(args.output_dir / "plinder200_distance_matched_pairs.csv.gz", index=False)
     pair_summary.to_csv(
         args.output_dir / "plinder200_distance_matched_pair_summary.csv", index=False
+    )
+    pair_effects.to_csv(
+        args.output_dir / "plinder200_distance_matched_pair_effects.csv", index=False
+    )
+    pair_boot.to_csv(
+        args.output_dir / "plinder200_distance_matched_pair_bootstrap.csv.gz", index=False
     )
 
     selected_rows = (
@@ -397,6 +485,7 @@ def main() -> int:
         "summary": summary.to_dict(orient="records"),
         "paired_effects": effects.to_dict(orient="records"),
         "distance_matched_summary": pair_summary.to_dict(orient="records"),
+        "distance_matched_effects": pair_effects.to_dict(orient="records"),
     }
     (args.output_dir / "plinder200_pocket_results.json").write_text(
         json.dumps(payload, indent=2), encoding="utf-8"
@@ -406,19 +495,23 @@ def main() -> int:
         "",
         "## Trainable fusion selection",
         "",
-        trace.to_markdown(index=False, floatfmt=".4f"),
+        dataframe_to_markdown(trace),
         "",
         "## PLINDER-200 summary",
         "",
-        summary.to_markdown(index=False, floatfmt=".4f"),
+        dataframe_to_markdown(summary),
         "",
         "## Paired graph-AP effects",
         "",
-        effects.to_markdown(index=False, floatfmt=".4f"),
+        dataframe_to_markdown(effects),
         "",
         "## Distance-matched residue pairs",
         "",
-        pair_summary.to_markdown(index=False, floatfmt=".4f"),
+        dataframe_to_markdown(pair_summary),
+        "",
+        "## Distance-matched paired effects (complex-level resampling)",
+        "",
+        dataframe_to_markdown(pair_effects),
     ]
     (args.output_dir / "PLINDER200_POCKET_AND_TRAINABLE_FUSION_REPORT.md").write_text(
         "\n".join(report) + "\n", encoding="utf-8"
