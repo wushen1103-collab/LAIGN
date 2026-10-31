@@ -108,7 +108,15 @@ python -m scripts.evaluation.evaluate_pose_robustness --help
 python -m scripts.evaluation.summarize_postfreeze_holdout --help
 python -m scripts.evaluation.analyze_platinum_validation --help
 python -m scripts.evaluation.analyze_paired_statistics --help
+python -m scripts.evaluation.analyze_platinum_distance_conditioned --help
+python -m scripts.evaluation.analyze_plinder_pocket_and_trainable_fusion --help
 ```
+
+The distance-conditioned Platinum workflow runs directly from the compact
+assayed-site table committed under `source_data/validation/`. The PLINDER
+pocket-restricted workflow consumes the three standard Stage-2 prediction
+archives, fits one two-input fusion control per training run, and evaluates
+their probability ensemble on the frozen PLINDER-200 manifest.
 
 External baseline adapters require outputs from the corresponding official
 implementations. See `scripts/baselines/README.md` for the evaluation boundary.

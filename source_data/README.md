@@ -8,3 +8,8 @@ machine-specific paths are intentionally excluded.
 Run the evaluation workflows under `scripts/evaluation/` to regenerate these
 tables from newly trained models. The plotting scripts read this directory
 without requiring access to the original compute environment.
+
+`validation/platinum_assayed_site_scores.csv` contains the compact table of
+476 experimentally assayed sites used by the distance-conditioned Platinum
+analysis. It contains public benchmark identifiers, measured endpoints and
+model scores, without local paths or personal metadata.
