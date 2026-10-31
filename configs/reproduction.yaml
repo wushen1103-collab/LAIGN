@@ -4,7 +4,8 @@ project:
 
 graph_construction:
   negative_mode: hard
-  negative_ratio: 10
+  # Stage 1 training only; inference evaluates every residue-ligand-atom pair.
+  negative_ratio: 4
   max_negatives_per_complex: 128
   shard_size: 256
   seeds: [2401, 2402, 2403]

@@ -56,9 +56,13 @@ Construct the coordinate graphs used by the interaction scorer:
 ```bash
 python -m scripts.data.build_interaction_graph_dataset \
   --out-dir data/processed/structure_supervision/interaction_graphs \
-  --negative-mode hard --negative-ratio 10 \
+  --negative-mode hard --negative-ratio 4 \
   --max-negatives-per-complex 128 --seed 2401
 ```
+
+The four-to-one negative ratio applies only to Stage 1 training. All positive
+pairs are retained, distance-ordered negatives are capped at four per positive
+and 128 per complex, and inference evaluates every residue--ligand-atom pair.
 
 ## Training
 
