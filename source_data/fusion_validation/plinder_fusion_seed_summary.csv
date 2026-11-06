@@ -1,0 +1,23 @@
+family,cohort,method,mean,std,count
+branch_,external_test,Chemistry only (21 features),0.900529419662386,0.000313332168309609,3
+branch_,external_test,Geometry + chemistry without cross terms (55 features),0.9501706929798336,0.00013516854908108585,3
+branch_,external_test,Geometry only (34 features),0.7984843362939024,0.0016165912862568946,3
+branch_,external_val,Chemistry only (21 features),0.9027358371077069,0.000859509472466627,3
+branch_,external_val,Geometry + chemistry without cross terms (55 features),0.9483028633074134,0.0014258478958173314,3
+branch_,external_val,Geometry only (34 features),0.8098906852470632,0.0007042029819930532,3
+deepsets_,external_test,Typed pair-set DeepSets,0.9510708667511335,0.0008764906493537573,3
+deepsets_,external_val,Typed pair-set DeepSets,0.9441047961071117,0.00043838730701673695,3
+feature_head_,external_test,Full-feature nonlinear fusion,0.9581776251934636,0.0007109004858299899,3
+feature_head_,external_test,Without hydrogen_bond,0.8968944268826955,0.003083665475306683,3
+feature_head_,external_test,Without hydrophobic_contact,0.8546245601924748,0.004086020393276173,3
+feature_head_,external_test,Without pi_cation,0.9559046293777017,0.0007689829544161496,3
+feature_head_,external_test,Without pi_stacking,0.9513015938097515,0.0006224240779376099,3
+feature_head_,external_test,Without salt_bridge,0.9414924397351615,0.0005299905974499357,3
+feature_head_,external_val,Full-feature nonlinear fusion,0.9583974250734681,0.0008298024827049543,3
+feature_head_,external_val,Without hydrogen_bond,0.8912438175004523,0.0008923688923688519,3
+feature_head_,external_val,Without hydrophobic_contact,0.8666745731252458,0.0027969217672218836,3
+feature_head_,external_val,Without pi_cation,0.9517013448634236,0.0009469377035687005,3
+feature_head_,external_val,Without pi_stacking,0.9456023653099158,0.0006341185156295594,3
+feature_head_,external_val,Without salt_bridge,0.9365846046270544,0.0004854558954590284,3
+refit_,external_test,LAIGN refit (73 features),0.9541729386453847,9.438948179020637e-05,3
+refit_,external_val,LAIGN refit (73 features),0.9510153477899735,0.0016997352086469283,3

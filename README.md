@@ -151,3 +151,16 @@ structures and PyMOL and are therefore not bundled as binary assets.
 
 The repository code is released under the MIT License. Upstream datasets,
 baseline implementations and model weights retain their original licenses.
+
+## Supplementary fusion experiments (Tables S7-S10)
+
+The runnable modules, frozen cohort identifiers, parameter grids and compact
+source tables are documented in [the fusion reproduction guide](docs/FUSION_REPRODUCTION.md).
+They include two-input and 73-feature LightGBM, typed pair-set DeepSets,
+channel-removal refits, branch controls, disjoint-stage retraining and the
+PLIP/ProLIF annotation comparison. No external endpoint selects a model.
+
+PLINDER uses release **2024-06**, iteration **v2**, not the latest release.
+The exact 551 validation / 785 test cohort and PLINDER-200 membership are in
+`source_data/cohorts/plinder_cohorts.csv`. Upstream annotation/split file hashes
+are recorded in `source_data/cohorts/plinder_release.json`.

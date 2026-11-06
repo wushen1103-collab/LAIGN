@@ -1,0 +1,46 @@
+{
+  "release": "2024-06",
+  "iteration": "v2",
+  "split_identifier": "splits/split.parquet",
+  "annotation_identifier": "index/annotation_table.parquet",
+  "split_file": {
+    "bytes": 10651188,
+    "sha256": "2959fb4b32f8c5cc2d3e12fc810b8905e904496f5538e8d058f47eecee73eb40"
+  },
+  "annotation_file": {
+    "bytes": 1018256581,
+    "sha256": "d7ff7a087b3d336859afd5e57775fa1a4e9a23c90a7bb4ccbb6a278540ae31e9"
+  },
+  "upstream_split_counts": {
+    "train": 309140,
+    "removed": 98718,
+    "test": 1036,
+    "val": 832
+  },
+  "evaluated_counts": {
+    "external_test": 785,
+    "external_val": 551
+  },
+  "plinder200_counts": {
+    "external_test": 100,
+    "external_val": 100
+  },
+  "split_assignment_mismatches": 0,
+  "download_plan_columns": [
+    "zip_key",
+    "url",
+    "http_status",
+    "size_bytes",
+    "size_mb",
+    "systems",
+    "val_systems",
+    "test_systems"
+  ],
+  "download_plan_first_row": {
+    "url": "https://storage.googleapis.com/plinder/2024-06/v2/systems/a0.zip"
+  },
+  "cohort_manifest": {
+    "path": "source_data/cohorts/plinder_cohorts.csv",
+    "sha256": "1967959514a3de8c7d8fdaa9b9f78e3dec3f65b8ba09d14941d3fc94cd781e10"
+  }
+}

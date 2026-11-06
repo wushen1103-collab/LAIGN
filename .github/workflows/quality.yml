@@ -14,5 +14,5 @@ jobs:
           python-version: "3.10"
       - run: python -m compileall -q scripts figures tests
       - run: python scripts/tools/audit_release.py
-      - run: pip install pytest
+      - run: pip install pytest numpy pandas scipy scikit-learn
       - run: pytest -q

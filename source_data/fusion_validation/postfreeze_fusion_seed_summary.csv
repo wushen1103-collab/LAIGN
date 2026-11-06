@@ -1,0 +1,4 @@
+family,cohort,method,mean,std,count
+deepsets_,external_test,Typed pair-set DeepSets,0.9374409978259989,0.002984517593951952,3
+feature_head_,external_test,Full-feature nonlinear fusion,0.9547051836993474,0.0019793381183263047,3
+refit_,external_test,LAIGN refit (73 features),0.9432947821022473,0.005414777795593414,3

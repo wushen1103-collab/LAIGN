@@ -14,7 +14,7 @@ venv/
 .local/
 
 # Runtime artifacts
-data/
+/data/
 checkpoints/
 outputs/
 logs/
