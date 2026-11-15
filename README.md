@@ -125,6 +125,10 @@ implementations. See `scripts/baselines/README.md` for the evaluation boundary.
 
 ## Figures
 
+See [the result-level reproduction index](docs/RESULT_REPRODUCTION.md) for
+the input, analysis module, intermediate output and source table associated
+with each main result and supplementary analysis.
+
 The numerical figure panels can be regenerated from the committed source data:
 
 ```bash
@@ -136,6 +140,16 @@ python figures/plot_supplementary.py
 Generated files are written to ignored `main/` and `supplementary/`
 directories. Molecular case renderings require the corresponding public PDB
 structures and PyMOL and are therefore not bundled as binary assets.
+
+Fig. 3a derives its annotation from the same 70 probability-ensemble score
+pairs shown in the scatter. Its paired effect is +0.0097, with complex-level
+bootstrap 95% CI [-0.0064, 0.0253]; this is not the mean-of-runs endpoint.
+Verify the annotation without generating any figure:
+
+```bash
+python figures/temporal_statistics.py
+python -m pytest -q tests/test_temporal_figure_statistics.py
+```
 
 ## Reproducibility notes
 

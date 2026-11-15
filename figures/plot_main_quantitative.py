@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from temporal_statistics import annotation_text, temporal_summary
+
 from figure_style import (
     DATA_LINE_WIDTH,
     ERROR_CAPSIZE,
@@ -72,7 +74,7 @@ def plot_fig3() -> None:
     ax.text(
         0.04,
         0.05,
-        "$N=70$\n$\\Delta=+0.0206$\n95% CI [0.0051, 0.0390]",
+        annotation_text(temporal_summary(temporal)),
         transform=ax.transAxes,
         fontsize=6.5,
         ha="left",
